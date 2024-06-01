@@ -112,6 +112,8 @@ const FormLayout = () => {
         setValue(newValue);
     };
 
+    console.log(`${process.env.API_URL}/users`)
+
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         const user = users.find(user => user.fullName === value);

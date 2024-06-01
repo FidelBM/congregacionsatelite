@@ -170,10 +170,10 @@ const ChartOne: React.FC = () => {
     const fetchUsers = async () => {
       try {
 
-        const response = await axios.get('http://localhost:8000/users');
+        const response = await axios.get(`${process.env.API_URL}/users`);
         setTotalUsers(response.data.length);
 
-        const response2 = await axios.get('http://localhost:8000/cards');
+        const response2 = await axios.get(`${process.env.API_URL}/cards`);
         const currentYear = new Date().getFullYear();
         let monthlyCardsTemp = Array(12).fill(0); // Array temporal para almacenar el número de tarjetas para cada mes
 
