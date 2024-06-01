@@ -58,7 +58,7 @@ const FormLayout = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch(`${process.env.API_URL}/users`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -120,7 +120,7 @@ const FormLayout = () => {
 
         if (user) {
 
-            const response2 = await fetch(`${process.env.API_URL}/cards`);
+            const response2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cards`);
             const allCards = await response2.json();
 
 // 2. Filtra las tarjetas obtenidas por userId
@@ -143,7 +143,7 @@ const FormLayout = () => {
 
             if (currentMonthCards.length >= 1) {
 
-                const response = await fetch(`${process.env.API_URL}/cards/${currentMonthCards[0].id}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cards/${currentMonthCards[0].id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -151,7 +151,6 @@ const FormLayout = () => {
                     body: JSON.stringify(updateCardDto)
                 });
 
-                console.log(`http://localhost:8000/cards/${currentMonthCards[0].id}`)
                 if (!response.ok) {
                     console.log('Hubo un problema con la petición PUT: ' + response.status);
                 } else {
@@ -172,7 +171,7 @@ const FormLayout = () => {
                 userId: Number(user.id)
             };
 
-            const response = await fetch(`${process.env.API_URL}/cards`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/cards`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

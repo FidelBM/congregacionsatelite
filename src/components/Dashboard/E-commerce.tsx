@@ -44,7 +44,7 @@ const ECommerce: React.FC = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`https://cards_backend.railway.internal:8000/users`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`);
         setTotalUsers(response.data.length);
         setAncianos(response.data.filter((user:any) => user.anciano).length);
         setSiervoMinisterial(response.data.filter((user:any) => user.siervo_ministerial).length);
@@ -59,7 +59,7 @@ const ECommerce: React.FC = () => {
 
   const fetchCards = async () => {
     try {
-      const response = await axios.get(`https://cards_backend.railway.internal:8000/cards`);
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cards`);
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
       const cardsThisMonth = response.data.filter((card:Card) => {

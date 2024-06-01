@@ -8,7 +8,6 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 
 
 const FormLayout = () => {
-    console.log(process.env.API_URL);
 
     const [fullName, setFullName] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
@@ -72,7 +71,7 @@ const FormLayout = () => {
         };
 
         try {
-            const response = await axios.post(`http://${process.env.API_URL}/users`, createUserDto);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/users`, createUserDto);
             console.log(response.data);
         } catch (error) {
             console.error(error);
