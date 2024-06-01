@@ -173,7 +173,7 @@ const FormLayout = () => {
                 userId: Number(user.id)
             };
 
-            const response = await fetch(`https://cardspage-production.up.railway.app/cards`, {
+            const response = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
