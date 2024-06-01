@@ -43,6 +43,7 @@ interface User {
 }
 
 const TableThree = () => {
+  console.log(process.env.NEXT_PUBLIC_API_URL);
 
   const [users, setUsers] = useState<User[]>([]);
   const [cards, setCards] = useState<Card[]>([]);
@@ -66,7 +67,7 @@ const TableThree = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${process.env.API_URL}/users`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users`);
         setUsers(response.data);
       } catch (error) {
         console.error(error);
@@ -75,7 +76,7 @@ const TableThree = () => {
 
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`${process.env.API_URL}/cards`);
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/cards`);
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const cardsThisMonth = response.data.filter((card: Card) => {
