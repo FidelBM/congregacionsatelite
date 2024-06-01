@@ -71,7 +71,7 @@ const FormLayout = () => {
         };
 
         try {
-            const response = await axios.post(`https://cardspage-production.up.railway.app/users`, createUserDto);
+            const response = await axios.post(`https://cardsbackend-production-f527.up.railway.app/users`, createUserDto);
             console.log(response.data);
         } catch (error) {
             console.error(error);

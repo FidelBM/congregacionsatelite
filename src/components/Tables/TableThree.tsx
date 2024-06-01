@@ -66,7 +66,7 @@ const TableThree = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`https://cardspage-production.up.railway.app/users`);
+        const response = await axios.get(`https://cardsbackend-production-f527.up.railway.app/users`);
         setUsers(response.data);
       } catch (error) {
         console.error(error);
@@ -75,7 +75,7 @@ const TableThree = () => {
 
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`https://cardspage-production.up.railway.app/cards`);
+        const response = await axios.get(`https://cardsbackend-production-f527.up.railway.app/cards`);
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const cardsThisMonth = response.data.filter((card: Card) => {

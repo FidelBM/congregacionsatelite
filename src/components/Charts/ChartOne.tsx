@@ -170,10 +170,10 @@ const ChartOne: React.FC = () => {
     const fetchUsers = async () => {
       try {
 
-        const response = await axios.get(`https://cardspage-production.up.railway.app/users`);
+        const response = await axios.get(`https://cardsbackend-production-f527.up.railway.app/users`);
         setTotalUsers(response.data.length);
 
-        const response2 = await axios.get(`https://cardspage-production.up.railway.app/cards`);
+        const response2 = await axios.get(`https://cardsbackend-production-f527.up.railway.app/cards`);
         const currentYear = new Date().getFullYear();
         let monthlyCardsTemp = Array(12).fill(0); // Array temporal para almacenar el número de tarjetas para cada mes
 

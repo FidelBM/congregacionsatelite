@@ -45,6 +45,8 @@ type Card = {
 
 const FormLayout = () => {
 
+    console.log("https://cardspage-production.up.railway.app/cards")
+
     const [horas, setHoras] = useState('');
     const [comentarios, setComentarios] = useState('');
     const [cursos, setCursos] = useState('');
@@ -58,7 +60,7 @@ const FormLayout = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch(`https://cardspage-production.up.railway.app/users`)
+        fetch(`https://cardsbackend-production-f527.up.railway.app/users`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -120,7 +122,7 @@ const FormLayout = () => {
 
         if (user) {
 
-            const response2 = await fetch(`https://cardspage-production.up.railway.app/cards`);
+            const response2 = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards`);
             const allCards = await response2.json();
 
 // 2. Filtra las tarjetas obtenidas por userId
@@ -143,7 +145,7 @@ const FormLayout = () => {
 
             if (currentMonthCards.length >= 1) {
 
-                const response = await fetch(`https://cardspage-production.up.railway.app/cards/${currentMonthCards[0].id}`, {
+                const response = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards/${currentMonthCards[0].id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
