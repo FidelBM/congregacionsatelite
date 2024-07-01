@@ -88,7 +88,7 @@ const FormLayout = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        if (!Date.parse(dateOfBirth) || !Date.parse(dateOfBaptism)) {
+        if (!Date.parse(dateOfBirth)) {
             Swal.fire('¡Error!', 'Por favor, ingresa una fecha válida', 'error');
             return;
         }
