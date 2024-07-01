@@ -134,28 +134,28 @@ const TableThree = () => {
             Cantidad: users.filter(user => user.precursorado === 'Publicador').length - cards.filter(card => card.auxiliar).length,
             Informaron: cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length,
             Cursos: cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0),
-            Horas: cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
+            Horas: cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
         },
         {
             Descripcion: 'Precursores Regulares',
             Cantidad: users.filter(user => user.precursorado === 'Precursor Regular').length,
             Informaron: cards.filter(card => card.user.precursorado === 'Precursor Regular').length,
             Cursos: cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0),
-            Horas: cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
+            Horas: cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
         },
         {
             Descripcion: 'Precursores Auxiliares',
             Cantidad: cards.filter(card => card.auxiliar).length,
             Informaron: cards.filter(card => card.auxiliar).length,
             Cursos: cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0),
-            Horas: cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
+            Horas: cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
         },
         {
             Descripcion: 'Total',
             Cantidad: users.length,
             Informaron: cards.length,
             Cursos: cards.map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0),
-            Horas: cards.map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
+            Horas: cards.map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0),
         },
     ];
 
@@ -163,22 +163,23 @@ const TableThree = () => {
         {
             Descripcion: 'Publicadores',
             Cursos: (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length),
-            Horas: (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length),
+            Horas: (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length),
         },
         {
             Descripcion: 'Precursores Regulares',
             Cursos: (cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length),
-            Horas: (cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length),
+            Horas: (cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length),
         },
         {
             Descripcion: 'Precursores Auxiliares',
             Cursos: (cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.auxiliar).length),
-            Horas: (cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar).length),
+            Horas: (cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar).length),
         },
         {
             Descripcion: 'Total',
             Cursos: (cards.map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.length),
-            Horas: (cards.map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.length),
+            Horas: (((cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular' ).length))
+                + ((cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar ).length))).toFixed(2),
         },
     ];
     const tableData = filteredUsers.map(user => ({
@@ -257,7 +258,7 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
+                                        {cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
                                     </p>
                                 </td>
                             </tr>
@@ -285,7 +286,7 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
+                                        {cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
                                     </p>
                                 </td>
                             </tr>
@@ -313,7 +314,7 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
+                                        {cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
                                     </p>
                                 </td>
                             </tr>
@@ -341,7 +342,7 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="font-medium text-black dark:text-white">
-                                        {cards.map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
+                                        {cards.map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)}
                                     </p>
                                 </td>
                             </tr>
@@ -376,12 +377,12 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length)}
+                                        {((cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length)).toFixed(2)}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length)}
+                                        {((cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Publicador' && !card.auxiliar).length)).toFixed(2)}
                                     </p>
                                 </td>
                             </tr>
@@ -393,12 +394,12 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length)}
+                                        {((cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length)).toFixed(2)}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length)}
+                                        {((cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular').length)).toFixed(2)}
                                     </p>
                                 </td>
                             </tr>
@@ -410,12 +411,12 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.auxiliar).length)}
+                                        {((cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + (curr ? parseInt(curr) : 0), 0)) / (cards.filter(card => card.auxiliar).length)).toFixed(2)}
                                     </p>
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="text-black dark:text-white">
-                                        {(cards.filter(card => card.auxiliar).map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar).length)}
+                                        {((cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar).length)).toFixed(2)}
                                     </p>
                                 </td>
                             </tr>
@@ -432,7 +433,8 @@ const TableThree = () => {
                                 </td>
                                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                                     <p className="font-medium text-black dark:text-white">
-                                        {((cards.map(card => card.cursos).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.length)).toFixed(2)}
+                                        {(((cards.filter(card => card.user.precursorado === 'Precursor Regular').map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.user.precursorado === 'Precursor Regular' ).length))
+                                        + ((cards.filter(card => card.auxiliar).map(card => card.horas).reduce((acc, curr) => acc + Number(curr ?? 0), 0)) / (cards.filter(card => card.auxiliar ).length))).toFixed(2)}
                                     </p>
                                 </td>
                             </tr>
