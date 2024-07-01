@@ -30,6 +30,8 @@ interface Cards {
         precursorado: string;
         createdAt: string;
         updatedAt: string;
+        grupo: number;
+        sg: string;
     };
 }
 
@@ -45,7 +47,6 @@ type Card = {
 
 const FormLayout = () => {
 
-    console.log("https://cardspage-production.up.railway.app/cards")
 
     const [horas, setHoras] = useState('');
     const [comentarios, setComentarios] = useState('');
@@ -60,7 +61,7 @@ const FormLayout = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        fetch(`https://cardsbackend-production-f527.up.railway.app/users`)
+        fetch(`https://cardsatelitebackend-production.up.railway.app/users`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -101,7 +102,7 @@ const FormLayout = () => {
 
     const onSuggestionSelected = (event: any, { suggestion }: any) => {
 
-        if (suggestion.precursorado === 'Regular') { // Verifica si el usuario tiene la propiedad "Regular" en "precursorado"
+        if (suggestion.precursorado === 'Precursor Regular') { // Verifica si el usuario tiene la propiedad "Regular" en "precursorado"
             setShowHours(true); // Muestra el input de horas
             setShowAuxiliar(false); // Muestra el input de auxiliar
         } else {
@@ -122,7 +123,7 @@ const FormLayout = () => {
 
         if (user) {
 
-            const response2 = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards`);
+            const response2 = await fetch(`https://cardsatelitebackend-production.up.railway.app/cards`);
             const allCards = await response2.json();
 
 // 2. Filtra las tarjetas obtenidas por userId
@@ -145,7 +146,7 @@ const FormLayout = () => {
 
             if (currentMonthCards.length >= 1) {
 
-                const response = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards/${currentMonthCards[0].id}`, {
+                const response = await fetch(`https://cardsatelitebackend-production.up.railway.app/cards/${currentMonthCards[0].id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -173,7 +174,7 @@ const FormLayout = () => {
                 userId: Number(user.id)
             };
 
-            const response = await fetch(`https://cardsbackend-production-f527.up.railway.app/cards`, {
+            const response = await fetch(`https://cardsatelitebackend-production.up.railway.app/cards`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

@@ -2,6 +2,7 @@
 import { Package } from "@/types/package";
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 interface Card {
   id: number;
@@ -23,6 +24,8 @@ interface Card {
     siervo_ministerial: boolean;
     genero: string;
     precursorado: string;
+    grupo: number;
+    sg: string;
     createdAt: string;
     updatedAt: string;
   };
@@ -38,6 +41,8 @@ interface User {
     siervo_ministerial: boolean;
     genero: string;
     precursorado: string;
+    grupo: number;
+    sg: string;
     createdAt: string;
     updatedAt: string;
 }
@@ -66,16 +71,17 @@ const TableThree = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`https://cardsbackend-production-f527.up.railway.app/users`);
+        const response = await axios.get(`https://cardsatelitebackend-production.up.railway.app/users`);
         setUsers(response.data);
       } catch (error) {
         console.error(error);
       }
     };
 
+
     const fetchCards = async () => {
       try {
-        const response = await axios.get(`https://cardsbackend-production-f527.up.railway.app/cards`);
+        const response = await axios.get(`https://cardsatelitebackend-production.up.railway.app/cards`);
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
         const cardsThisMonth = response.data.filter((card: Card) => {
@@ -93,6 +99,50 @@ const TableThree = () => {
     fetchCards();
   }, []);
 
+  const deleteUser = async (userId:number) => {
+    try {
+      // Primero, obtener todas las tarjetas del usuario
+      const userCards = cards.filter(card => card.userId === userId);
+
+      // Luego, borrar cada tarjeta asociada al usuario
+      for (let card of userCards) {
+        await axios.delete(`http://localhost:8000/cards/${card.id}`);
+      }
+
+      // Finalmente, borrar el usuario
+      await axios.delete(`http://localhost:8000/users/${userId}`);
+
+      // Actualizar la lista de usuarios y tarjetas después de borrar
+      const updatedUsers = users.filter(user => user.id !== userId);
+      const updatedCards = cards.filter(card => card.userId !== userId);
+      setUsers(updatedUsers);
+      setCards(updatedCards);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const confirmDeleteUser = async (userId: number) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, borrar!',
+      cancelButtonText: 'No, cancelar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteUser(userId);
+        Swal.fire(
+            'Borrado!',
+            'El usuario ha sido borrado.',
+            'success'
+        )
+      }
+    })
+  };
+
 
 
   return (
@@ -100,42 +150,46 @@ const TableThree = () => {
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
-                <input
-                    className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
-                    type="text"
-                    value={nameFilter}
-                    onChange={(e) => setNameFilter(e.target.value)}
-                    placeholder="Filtrar por nombre"
-                />
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                <select
-                    className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
-                    value={privilegeFilter}
-                    onChange={(e) => setPrivilegeFilter(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  <option value="Regular">Precursor Regular</option>
-                  <option value="null">Publicador</option>
-                </select>
-              </th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
-                <select
-                    className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
-                    value={reportStatusFilter}
-                    onChange={(e) => setReportStatusFilter(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  <option value="Reportado">Reportado</option>
-                  <option value="No reportado">No reportado</option>
-                </select>
-              </th>
-              <th className="px-4 py-4 font-medium text-black dark:text-white">
-                Acciones
-              </th>
-            </tr>
+          <tr className="bg-gray-2 text-left dark:bg-meta-4">
+            <th className="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
+              <input
+                  className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
+                  type="text"
+                  value={nameFilter}
+                  onChange={(e) => setNameFilter(e.target.value)}
+                  placeholder="Filtrar por nombre"
+              />
+            </th>
+            <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
+              <select
+                  className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
+                  value={privilegeFilter}
+                  onChange={(e) => setPrivilegeFilter(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="Regular">Precursor Regular</option>
+                <option value="Publicador">Publicador</option>
+              </select>
+            </th>
+            <th className="px-4 py-4 font-medium text-black dark:text-white">
+              Grupo
+            </th>
+            <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
+              <select
+                  className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
+                  value={reportStatusFilter}
+                  onChange={(e) => setReportStatusFilter(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="Reportado">Reportado</option>
+                <option value="No reportado">No reportado</option>
+              </select>
+            </th>
+
+            <th className="px-4 py-4 font-medium text-black dark:text-white">
+              Acciones
+            </th>
+          </tr>
           </thead>
           <tbody>
           {filteredUsers.map((user, key) => (
@@ -147,7 +201,12 @@ const TableThree = () => {
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {user.precursorado === "Regular" ? "Precursor Regular" : "Publicador"}
+                    {cards.filter(card => card.userId === user.id && card.auxiliar).length > 0 ? 'Precursor Auxiliar' : user.precursorado}
+                  </p>
+                </td>
+                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {user.grupo}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
@@ -182,7 +241,7 @@ const TableThree = () => {
                         />
                       </svg>
                     </button>
-                    <button className="hover:text-primary">
+                    <button className="hover:text-primary" onClick={() => confirmDeleteUser(user.id)}>
                       <svg
                           className="fill-current"
                           width="18"
