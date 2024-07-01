@@ -158,7 +158,16 @@ const FormLayout = () => {
                     console.log('Hubo un problema con la petición PUT: ' + response.status);
                 } else {
                     console.log('Datos actualizados correctamente');
-                    Swal.fire('¡Reporte actualizado!', '¡Los datos se actualizaron correctamente!', 'success');
+                    Swal.fire({
+                        title: '¡Reporte actualizado!',
+                        text: '¡Los datos se enviaron correctamente!',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
                 }
 
                 return
@@ -186,7 +195,16 @@ const FormLayout = () => {
                 console.log('Hubo un problema con la petición POST: ' + response.status);
             } else {
                 console.log('Datos enviados correctamente');
-                Swal.fire('¡Reporte subido!', '¡Los datos se enviaron correctamente!', 'success');
+                Swal.fire({
+                    title: '¡Reporte subido!',
+                    text: '¡Los datos se enviaron correctamente!',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        location.reload();
+                    }
+                });
             }
         } else {
             console.log('User not found');
