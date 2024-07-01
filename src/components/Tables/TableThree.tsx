@@ -54,6 +54,7 @@ const TableThree = () => {
 
   const [nameFilter, setNameFilter] = useState<string>('');
   const [privilegeFilter, setPrivilegeFilter] = useState<string>('');
+  const [grupoFilter, setGrupoFilter] = useState<string>('');
   const [reportStatusFilter, setReportStatusFilter] = useState<string>('');
 
 
@@ -65,7 +66,8 @@ const TableThree = () => {
   const filteredUsers = usersWithCards.filter(user =>
       user.fullName.toLowerCase().includes(nameFilter.toLowerCase()) &&
       user.precursorado.toLowerCase().includes(privilegeFilter.toLowerCase()) &&
-      (reportStatusFilter === '' || (reportStatusFilter === 'Reportado' ? user.cards.length > 0 : user.cards.length === 0))
+      (reportStatusFilter === '' || (reportStatusFilter === 'Reportado' ? user.cards.length > 0 : user.cards.length === 0)) &&
+        (grupoFilter === '' || user.grupo === parseInt(grupoFilter))
   );
 
   useEffect(() => {
@@ -106,11 +108,11 @@ const TableThree = () => {
 
       // Luego, borrar cada tarjeta asociada al usuario
       for (let card of userCards) {
-        await axios.delete(`http://localhost:8000/cards/${card.id}`);
+        await axios.delete(`https://cardsatelitebackend-production.up.railway.app/cards/${card.id}`);
       }
 
       // Finalmente, borrar el usuario
-      await axios.delete(`http://localhost:8000/users/${userId}`);
+      await axios.delete(`https://cardsatelitebackend-production.up.railway.app/users/${userId}`);
 
       // Actualizar la lista de usuarios y tarjetas después de borrar
       const updatedUsers = users.filter(user => user.id !== userId);
@@ -172,7 +174,19 @@ const TableThree = () => {
               </select>
             </th>
             <th className="px-4 py-4 font-medium text-black dark:text-white">
-              Grupo
+              <select
+                  className="w-full border border-stroke rounded-sm px-4 py-2.5 dark:border-strokedark dark:bg-boxdark dark:text-white"
+                  value={grupoFilter}
+                  onChange={(e) => setGrupoFilter(e.target.value)}
+              >
+                <option value="">Todos</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+              </select>
             </th>
             <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
               <select

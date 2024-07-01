@@ -50,7 +50,7 @@ const ECommerce: React.FC = () => {
         setTotalUsers(response.data.length);
         setAncianos(response.data.filter((user:any) => user.anciano).length);
         setSiervoMinisterial(response.data.filter((user:any) => user.siervo_ministerial).length);
-        setTotalPrecursores(response.data.filter((user:any) => user.precursorado == 'Regular').length);
+        setTotalPrecursores(response.data.filter((user:any) => user.precursorado == 'Precursor Regular').length);
       } catch (error) {
         console.error(error);
       }
