@@ -101,7 +101,7 @@ const FormLayout = () => {
         const createUserDto = {
             fullName,
             date_of_birth: new Date(dateOfBirth).toISOString().split('T')[0],
-            date_of_baptism: new Date(dateOfBaptism).toISOString().split('T')[0],
+            date_of_baptism: dateOfBaptism ? new Date(dateOfBaptism).toISOString().split('T')[0] : null,
             esperanza,
             anciano,
             siervo_ministerial: siervoMinisterial,
