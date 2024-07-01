@@ -92,7 +92,7 @@ const FormLayout = () => {
             Swal.fire('¡Error!', 'Por favor, ingresa una fecha válida', 'error');
             return;
         }
-        if(!fullName || !dateOfBirth || !dateOfBaptism || !genero || !esperanza || !grupo || !sg) {
+        if(!fullName || !dateOfBirth || !genero || !esperanza || !grupo || !sg) {
             Swal.fire('¡Error!', 'Llena todos los campos para seguir', 'error');
             return;
         }
