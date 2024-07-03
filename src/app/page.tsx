@@ -59,6 +59,7 @@ const FormLayout = () => {
     const [suggestions, setSuggestions] = useState<{fullName: string, id: string}[]>([]);
     const [value, setValue] = useState('');
     const [error, setError] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
         fetch(`https://cardsatelitebackend-production.up.railway.app/users`)
@@ -94,20 +95,38 @@ const FormLayout = () => {
 
     const onSuggestionsFetchRequested = ({ value }: any) => {
         setSuggestions(getSuggestions(value));
+
+
     };
 
     const onSuggestionsClearRequested = () => {
         setSuggestions([]);
     };
 
-    const onSuggestionSelected = (event: any, { suggestion }: any) => {
+    const handleBlur = () => {
+        // Verifica si el nombre está en la base de datos
+        const nameExists = users.some(user => user.fullName.toLowerCase() === value.trim().toLowerCase());
 
-        if (suggestion.precursorado === 'Precursor Regular') { // Verifica si el usuario tiene la propiedad "Regular" en "precursorado"
-            setShowHours(true); // Muestra el input de horas
-            setShowAuxiliar(false); // Muestra el input de auxiliar
+        if (!nameExists) {
+            setError('El nombre no se encuentra, porfavor selecciona el nombre sugerido');
         } else {
-            setShowHours(false); // Oculta el input de horas
-            setShowAuxiliar(true);
+            setError(''); // Limpia el error si el nombre existe
+        }
+    };
+
+    const onSuggestionSelected = (event: any, { suggestion }: any) => {
+        const nameExists = users.some(user => user.fullName.toLowerCase() === suggestion.fullName.toLowerCase());
+
+        if (nameExists) {
+            setError('');
+
+            if (suggestion.precursorado === 'Precursor Regular') { // Verifica si el usuario tiene la propiedad "Regular" en "precursorado"
+                setShowHours(true); // Muestra el input de horas
+                setShowAuxiliar(false); // Muestra el input de auxiliar
+            } else {
+                setShowHours(false); // Oculta el input de horas
+                setShowAuxiliar(true);
+            }
         }
     };
 
@@ -115,10 +134,10 @@ const FormLayout = () => {
         setValue(newValue);
     };
 
-    console.log(`${process.env.API_URL}/users`)
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
+        setIsSubmitting(true);
         const user = users.find(user => user.fullName === value);
 
         if (user) {
@@ -157,6 +176,7 @@ const FormLayout = () => {
                 if (!response.ok) {
                     console.log('Hubo un problema con la petición PUT: ' + response.status);
                 } else {
+                    setIsSubmitting(false);
                     console.log('Datos actualizados correctamente');
                     Swal.fire({
                         title: '¡Reporte actualizado!',
@@ -174,11 +194,12 @@ const FormLayout = () => {
 
             }
 
+
             const createCardDto = {
                 horas: horas ? Number(horas) : null,
                 comentarios: comentarios,
                 cursos: cursos ? Number(cursos) : null,
-                predico: predico,
+                predico: Number(horas) > 0 ? true : predico,
                 auxiliar: auxiliar,
                 userId: Number(user.id)
             };
@@ -195,6 +216,7 @@ const FormLayout = () => {
                 console.log('Hubo un problema con la petición POST: ' + response.status);
             } else {
                 console.log('Datos enviados correctamente');
+                setIsSubmitting(false);
                 Swal.fire({
                     title: '¡Reporte subido!',
                     text: '¡Los datos se enviaron correctamente!',
@@ -208,10 +230,12 @@ const FormLayout = () => {
             }
         } else {
             console.log('User not found');
+            setIsSubmitting(false);
             setError('Poner el nombre completo sugerido');
             Swal.fire('Error', 'El nombre no se encontro!', 'error');
 
         }
+
     };
 
     const inputProps = {
@@ -246,7 +270,7 @@ const FormLayout = () => {
                                     onSuggestionsClearRequested={onSuggestionsClearRequested}
                                     getSuggestionValue={(suggestion) => suggestion.fullName}
                                     renderSuggestion={(suggestion) => <div>{suggestion.fullName}</div>}
-                                    inputProps={inputProps}
+                                    inputProps={{...inputProps, onBlur: handleBlur}}
                                     theme={{
                                         input: "w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary",
                                         suggestionsContainer: "absolute z-50  w-full",
@@ -342,6 +366,7 @@ const FormLayout = () => {
 
 
                             <button
+                                disabled={isSubmitting}
                                 className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
                                 Subir
                             </button>
