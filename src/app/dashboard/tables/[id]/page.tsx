@@ -1,12 +1,14 @@
 "use client";
-
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import axios from "axios";
-import React, { useState } from "react";
+import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Swal from "sweetalert2";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { User } from "@/interfaces/user";
+import { useRouter } from "next/navigation";
 
-const FormLayout = () => {
+export default function FormEdit({ params }: { params: { id: string } }) {
   const [fullName, setFullName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [dateOfBaptism, setDateOfBaptism] = useState("");
@@ -23,9 +25,50 @@ const FormLayout = () => {
   const [regular, setRegular] = useState(false);
   const [especial, setEspecial] = useState(false);
   const [misionero, setMisionero] = useState(false);
+  const [user, setUser] = useState<User>();
+  const router = useRouter();
 
   const [grupo, setGrupo] = useState("");
   const [sg, setSg] = useState("");
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${params.id}`
+        );
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [params.id]);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.fullName);
+      setDateOfBirth(user.date_of_birth);
+      setDateOfBaptism(user.date_of_baptism);
+      setEsperanza(user.esperanza);
+      setAnciano(user.anciano);
+      setSiervoMinisterial(user.siervo_ministerial);
+      setGenero(user.genero);
+      setPrecursorado(user.precursorado);
+      setGrupo(user.grupo.toString());
+      setSg(user.sg);
+
+      setHombre(user.genero === "Hombre");
+      setMujer(user.genero === "Mujer");
+      setOtrasOvejas(user.esperanza === "Otras Ovejas");
+      setUngido(user.esperanza === "Ungido");
+      setRegular(user.precursorado === "Precursor Regular");
+      setEspecial(user.precursorado === "Precursor Especial");
+      setMisionero(user.precursorado === "Misionero");
+    }
+  }, [user]);
 
   React.useEffect(() => {
     switch (grupo) {
@@ -109,31 +152,33 @@ const FormLayout = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`,
-        createUserDto
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${params.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createUserDto),
+        }
       );
-      console.log(response.data);
-      if (
-        response.data.status === 409 &&
-        response.data.message === "Correo ya registrado"
-      ) {
-        Swal.fire("¡Error!", "Hermano ya registrado", "error");
-      } else {
+      console.log(response);
+      if (response.ok) {
         Swal.fire(
-          "¡Reporte subido!",
-          "¡Los datos se enviaron correctamente!",
+          "Usuario actualizado",
+          "Los datos del Usuario ya han sido actualizados",
           "success"
         );
+        router.push("/dashboard/tables");
       }
     } catch (error) {
-      Swal.fire("¡Error!", "Llena todos los campos para seguir", "error");
+      console.log(error);
     }
   };
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Formulario" />
+      <Breadcrumb pageName="Actualizar" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
@@ -426,6 +471,4 @@ const FormLayout = () => {
       </div>
     </DefaultLayout>
   );
-};
-
-export default FormLayout;
+}

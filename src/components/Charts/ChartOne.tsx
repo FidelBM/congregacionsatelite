@@ -1,5 +1,5 @@
 import { ApexOptions } from "apexcharts";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import axios from "axios";
 
@@ -123,8 +123,6 @@ interface ChartOneState {
   }[];
 }
 
-
-
 interface Card {
   id: number;
   horas: number;
@@ -165,41 +163,56 @@ const ChartOne: React.FC = () => {
     ],
   });
 
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-
-        const response = await axios.get(`https://cardsatelitebackend-production.up.railway.app/users`);
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/users`
+        );
         setTotalUsers(response.data.length);
 
-        const response2 = await axios.get(`https://cardsatelitebackend-production.up.railway.app/cards`);
+        const response2 = await axios.get(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/cards`
+        );
         const currentYear = new Date().getFullYear();
         let monthlyCardsTemp = Array(12).fill(0); // Array temporal para almacenar el número de tarjetas para cada mes
 
-        for (let month = 8; month < 20; month++) { // Comienza en septiembre (mes 8) y termina en agosto del próximo año (mes 19)
+        for (let month = 8; month < 20; month++) {
+          // Comienza en septiembre (mes 8) y termina en agosto del próximo año (mes 19)
           const cardsThisMonth = response2.data.filter((card: Card) => {
             const cardMonth = new Date(card.createdAt).getMonth();
-            console.log(cardMonth, month < 12 ? currentYear  +1 : currentYear)
+            console.log(cardMonth, month < 12 ? currentYear + 1 : currentYear);
             const cardYear = new Date(card.createdAt).getFullYear();
-            return cardMonth === month % 12 && cardYear === (month < 12 ? currentYear -1 : currentYear );
-
+            return (
+              cardMonth === month % 12 &&
+              cardYear === (month < 12 ? currentYear - 1 : currentYear)
+            );
           });
 
           monthlyCardsTemp[month % 12] = cardsThisMonth.length;
-
-
-
         }
         setState({
           series: [
             {
               name: "Publicadores Totales",
-              data: [response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length, response.data.length],
+              data: [
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+                response.data.length,
+              ],
             },
             {
               name: "Infomes Mensuales",
-              data: monthlyCardsTemp
+              data: monthlyCardsTemp,
             },
           ],
         });
@@ -217,7 +230,6 @@ const ChartOne: React.FC = () => {
     }));
   };
   handleReset;
-
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
@@ -240,7 +252,6 @@ const ChartOne: React.FC = () => {
             </div>
           </div>
         </div>
-
       </div>
 
       <div>
