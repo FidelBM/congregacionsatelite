@@ -101,22 +101,10 @@ const TableThree = () => {
 
   const deleteUser = async (userId: number) => {
     try {
-      // Primero, obtener todas las tarjetas del usuario
-      const userCards = cards.filter((card) => card.userId === userId);
-
-      // Luego, borrar cada tarjeta asociada al usuario
-      for (let card of userCards) {
-        await axios.delete(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/cards/${card.id}`
-        );
-      }
-
-      // Finalmente, borrar el usuario
       await axios.delete(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/users/${userId}`
       );
 
-      // Actualizar la lista de usuarios y tarjetas después de borrar
       const updatedUsers = users.filter((user) => user.id !== userId);
       const updatedCards = cards.filter((card) => card.userId !== userId);
       setUsers(updatedUsers);
@@ -241,6 +229,36 @@ const TableThree = () => {
     }
   };
 
+  const handleSubmitPublicador = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/cart-form/combined/publicador/${adjustedYear}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al descargar el PDF");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "publicadores.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -274,20 +292,20 @@ const TableThree = () => {
           >
             <option value="2023">2023</option>
             <option value="2024">2024</option>
-            <option value="2023">2025</option>
-            <option value="2024">2026</option>
-            <option value="2023">2027</option>
-            <option value="2024">2028</option>
-            <option value="2023">2029</option>
-            <option value="2024">2030</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
           </select>
         </div>
         <div className="flex flex-row w-full space-x-5">
           <button
-            onClick={handleSubmit}
+            onClick={handleSubmitPublicador}
             className="w-full p-3 bg-green-300 text-black-2 font-bold"
           >
-            Descargar tarjetas hermanos
+            Descargar tarjetas publicadores
           </button>
 
           <button
@@ -295,6 +313,14 @@ const TableThree = () => {
             className="w-full p-3 bg-green-300 text-black-2 font-bold"
           >
             Descargar tarjetas precursores
+          </button>
+        </div>
+        <div className="flex flex-row w-full space-x-5 pt-5">
+          <button
+            onClick={handleSubmit}
+            className="w-full p-3 bg-green-300 text-black-2 font-bold"
+          >
+            Descargar tarjetas de todos los hermanos
           </button>
         </div>
 
