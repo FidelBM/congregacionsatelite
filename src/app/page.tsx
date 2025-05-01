@@ -162,9 +162,18 @@ const FormLayout = () => {
       // 3. Filtra las tarjetas del usuario específico por el mes actual
       const currentDate = new Date();
       const currentMonth = currentDate.getMonth() + 1; // Los meses en JavaScript comienzan en 0
+      const currentYear = currentDate.getFullYear(); // Obtiene el año actual
+
       const currentMonthCards = userCards.filter((card: Cards) => {
         const cardDate = new Date(card.createdAt);
-        return cardDate.getMonth() + 1 === currentMonth;
+        const cardMonth = cardDate.getMonth() + 1; // Mes de la tarjeta
+        const cardYear = cardDate.getFullYear(); // Año de la tarjeta
+
+        console.log(cardMonth, currentMonth, cardYear, currentYear);
+        console.log(cardMonth === currentMonth && cardYear === currentYear);
+
+        // Verifica tanto el mes como el año
+        return cardMonth === currentMonth && cardYear === currentYear;
       });
 
       const updateCardDto = {
